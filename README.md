@@ -1,2 +1,2 @@
 # EWay
-EWay Integration
+A basic EWay integration for PHP 5.4+.

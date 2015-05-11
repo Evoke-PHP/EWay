@@ -1,0 +1,15 @@
+{
+    "description": "EWay Integration",
+    "name": "Evoke EWay Integration",
+    "minimum-stability": "dev",
+
+    "require": {
+    },
+
+    "autoload": {
+        "psr-0": {
+            "EWay": "vendor/EWay/EWay/src"
+        }
+    }
+}
+
