@@ -1,6 +1,6 @@
 {
     "description": "EWay Integration",
-    "name": "Evoke-PHP/EWay",
+    "name": "evoke-php/eway",
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0"
