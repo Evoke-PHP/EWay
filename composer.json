@@ -2,11 +2,9 @@
     "description": "EWay Integration",
     "name": "Evoke-PHP/EWay",
     "minimum-stability": "dev",
-
     "require": {
         "php": ">=5.4.0",
     },
-
     "autoload": {
         "psr-0": {
             "EWay": "vendor/EWay/EWay/src"
