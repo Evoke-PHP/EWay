@@ -61,6 +61,11 @@ class AccessCode
     /* Public Methods */
     /******************/
 
+    /**
+     * Send the request for an access code and return the response.
+     *
+     * @return \EWay\Response\AccessCode
+     */
     public function send()
     {
         $context  = stream_context_create(
@@ -77,7 +82,9 @@ class AccessCode
             ]
         );
 
-        return new Response(json_decode(file_get_contents($this->urlBase . 'AccessCodes', false, $context)));
+        return new \Eway\Response\AccessCode(
+            json_decode(file_get_contents($this->urlBase . 'AccessCodes', false, $context))
+        );
     }
 
     public function setCustomer(Array $customer)

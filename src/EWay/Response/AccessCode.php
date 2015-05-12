@@ -311,7 +311,9 @@ class AccessCode
      */
     public function hasErrors()
     {
-        return empty(array_diff($this->response->Errors, $this->codesForSuccess));
+        $errorCodes = array_diff($this->response->Errors, $this->codesForSuccess);
+
+        return empty($errorCodes);
     }
 }
 // EOF
