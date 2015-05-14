@@ -82,7 +82,7 @@ class AccessCode
             ]
         );
 
-        return new \Eway\Response\AccessCode(
+        return new \EWay\Response\AccessCode(
             json_decode(file_get_contents($this->urlBase . 'AccessCodes', false, $context))
         );
     }
