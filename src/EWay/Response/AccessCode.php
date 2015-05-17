@@ -277,6 +277,7 @@ class AccessCode
 
     public function __construct($response)
     {
+        $response->Errors = empty($response->Errors) ? [] : explode(',', $response->Errors);
         $this->response = $response;
     }
 
@@ -294,7 +295,7 @@ class AccessCode
         $errors = [];
 
         foreach ($this->response->Errors as $code) {
-            $errors[$code] = self::$codes[$code];
+            $errors[$code] = isset(self::$codes[$code]) ? self::$codes[$code] : 'Unknown Error';
         }
 
         return $errors;
@@ -311,11 +312,7 @@ class AccessCode
      */
     public function hasErrors()
     {
-        if (empty($this->response->Errors)) {
-            return false;
-        }
-
-        $errorCodes = array_diff(explode(',', $this->response->Errors), $this->codesForSuccess);
+        $errorCodes = array_diff($this->response->Errors, $this->codesForSuccess);
 
         return empty($errorCodes);
     }

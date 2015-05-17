@@ -8,21 +8,29 @@
 namespace EWay\Request;
 
 use DomainException,
+    RuntimeException,
     stdClass;
 
 /**
- * AccessCode
+ * EWay Access Code Request
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2015 Paul Young
- * @package EWay\Request
  */
 class AccessCode
 {
+    /**
+     * Methods that can be used for payments.
+     * @var array
+     */
     public static $methods = [
         'ProcessPayment', 'CreateTokenCustomer', 'UpdateTokenCustomer', 'TokenPayment', 'Authorise'
     ];
 
+    /**
+     * Transaction types.
+     * @var array
+     */
     public static $transactionTypes = ['Purchase', 'MOTO', 'Recurring'];
 
     /**
@@ -38,21 +46,31 @@ class AccessCode
     protected $body;
 
     /**
+     * The timeout for the request.
+     * @var int
+     */
+    protected $timeout;
+
+    /**
      * Base for the eway URLs.
      * @var string
      */
     protected $urlBase;
 
     /**
+     * Create an EWay Access Code request.
+     *
      * @param string $apiKey
      * @param string $password
      * @param bool   $isSandbox
+     * @param int    $timeout
      */
-    public function __construct($apiKey, $password, $isSandbox = false)
+    public function __construct($apiKey, $password, $isSandbox = false, $timeout = 60)
     {
         $this->authorization = base64_encode($apiKey . ':' . $password);
-        $this->body = new stdClass;
-        $this->urlBase = $isSandbox ?
+        $this->body          = new stdClass;
+        $this->timeout       = $timeout;
+        $this->urlBase       = $isSandbox ?
             'https://api.sandbox.ewaypayments.com/' :
             'https://api.ewaypayments.com/';
     }
@@ -64,7 +82,8 @@ class AccessCode
     /**
      * Send the request for an access code and return the response.
      *
-     * @return \EWay\Response\AccessCode
+     * @return stdClass
+     * @throws RuntimeException
      */
     public function send()
     {
@@ -77,32 +96,62 @@ class AccessCode
                             "Content-Type: application/json\r\n" .
                             "Authorization: Basic " . $this->authorization . "\r\n",
                         'content' => json_encode($this->body),
-                        'timeout' => 60
+                        'timeout' => $this->timeout
                     ]
             ]
         );
 
-        return new \EWay\Response\AccessCode(
-            json_decode(file_get_contents($this->urlBase . 'AccessCodes', false, $context))
-        );
+        $response = file_get_contents($this->urlBase . 'AccessCodes', false, $context);
+
+        if ($response === false) {
+            throw new RuntimeException('Unable to get access code');
+        }
+
+        $decodedResponse = json_decode($response);
+
+        if (!$decodedResponse instanceof stdClass) {
+            throw new RuntimeException('Unable to decode access code response.');
+        }
+
+        return $decodedResponse;
     }
 
+    /**
+     * Set the customer.
+     *
+     * @param array $customer
+     */
     public function setCustomer(Array $customer)
     {
         $this->body->Customer = (object) $customer;
     }
 
+    /**
+     * Set the customer IP address.
+     *
+     * @param string $ipAddress
+     */
     public function setCustomerIP($ipAddress)
     {
         $this->body->CustomerIP = $ipAddress;
     }
 
+    /**
+     * Set the Checkout Payment to use the paypal checkout.
+     *
+     * @param string $checkoutURL The URL to return to after the payment is verified.
+     */
     public function setCheckoutPayment($checkoutURL)
     {
         $this->body->CheckoutPayment = true;
         $this->body->CheckoutUrl = $checkoutURL;
     }
 
+    /**
+     * Set the device ID.
+     *
+     * @param string $deviceID
+     */
     public function setDeviceID($deviceID)
     {
         $this->body->DeviceID = $deviceID;
@@ -135,6 +184,11 @@ class AccessCode
         $this->body->Items = $itemsObjects;
     }
 
+    /**
+     * Set the payment method.
+     *
+     * @param $method
+     */
     public function setMethod($method)
     {
         if (!in_array($method, self::$methods)) {
@@ -144,6 +198,11 @@ class AccessCode
         $this->body->Method = $method;
     }
 
+    /**
+     * Set any options.
+     *
+     * @param array $options
+     */
     public function setOptions(Array $options)
     {
         $optionsObjects = [];
@@ -155,12 +214,19 @@ class AccessCode
         $this->body->Options = $optionsObjects;
     }
 
+    /**
+     * Set the partner ID.
+     *
+     * @param $partnerID
+     */
     public function setPartnerID($partnerID)
     {
         $this->body->PartnerID = $partnerID;
     }
 
     /**
+     * Set the payment information.
+     *
      * @param mixed[] $paymentInformation
      * Payment information of the form:
      * <code>
@@ -179,16 +245,31 @@ class AccessCode
         $this->body->Payment = (object) $paymentInformation;
     }
 
+    /**
+     * Set the url to redirect to after the payment has been processed.
+     *
+     * @param $url
+     */
     public function setRedirectURL($url)
     {
         $this->body->RedirectUrl = $url;
     }
 
+    /**
+     * Set the shipping address.
+     *
+     * @param array $shippingAddress
+     */
     public function setShippingAddress(Array $shippingAddress)
     {
         $this->body->ShippingAddress = (object) $shippingAddress;
     }
 
+    /**
+     * Set the transaction type.
+     *
+     * @param $transactionType
+     */
     public function setTransactionType($transactionType)
     {
         if (!in_array($transactionType, self::$transactionTypes)) {

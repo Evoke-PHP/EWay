@@ -1,0 +1,15 @@
+{
+    "description": "EWay Testing",
+    "name": "EWay Testing",
+    "minimum-stability": "dev",
+
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "EWay": "../src"
+	}
+    }
+}
