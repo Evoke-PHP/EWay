@@ -1,0 +1,23 @@
+<phpunit backupGlobals                      = "false"
+         backupStaticAttributes             = "false"
+         bootstrap                          = "../../test/vendor/autoload.php"
+         colors                             = "false"
+         convertErrorsToExceptions          = "false"
+         convertNoticesToExceptions         = "false"
+         convertWarningsToExceptions        = "false"
+         forceCoversAnnotation              = "true"
+         mapTestClassNameToCoveredClassName = "true"
+         syntaxCheck                        = "false"
+         verbose                            = "true">
+  <filter>
+    <whitelist addUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">../../src</directory>
+    </whitelist>
+  </filter>
+  
+  <testsuites>
+    <testsuite name="Evoke-PHP">
+      <directory>../../test/EWay</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

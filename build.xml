@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model
+        href="/usr/share/php5/PEAR/data/phing/etc/phing-grammar.rng"
+        type="application/xml"
+        schematypens="http://relaxng.org/ns/structure/1.0" ?>
+
+<!-- The build file used to check EWay. -->
+<project name="EWay" default="build">
+
+    <!-- Build properties. -->
+    <property name="project.build"
+              description="The directory for the build information."
+              value="${project.basedir}/build"/>
+
+    <property name="project.config"
+              description="The directory for build configuration."
+              value="${project.build}/config"/>
+
+    <property name="project.reports"
+              description="Build report directory"
+              value="${project.build}/reports"/>
+
+    <property name="project.source"
+              description="The directory for the PHP source files."
+              value="${project.basedir}/src"/>
+
+    <property name="project.test"
+              description="The directory for the PHP test files."
+              value="${project.basedir}/test"/>
+
+    <!-- File sets used in targets. -->
+    <fileset id="src" dir="${project.source}">
+        <include name="**/*.php"/>
+    </fileset>
+
+    <fileset id="tst" dir="${project.test}">
+        <include name="EWay/**/*.php"/>
+    </fileset>
+
+    <!-- Main Target definitions -->
+    <target name="build"
+            description="Check for code quality produce reports on it."
+            depends="check-build-sanity,
+                     clean,
+                     environment-setup,
+                     create-reports"/>
+
+    <target name="check-build-sanity"
+            description="Check to see whether a build can be made."
+            depends="lint-src,lint-test"/>
+
+    <target name="clean"
+            description="Remove all of the build artefacts.">
+        <if>
+            <available file="${project.reports}" type="dir"/>
+            <then>
+                <delete dir="${project.reports}"/>
+            </then>
+        </if>
+    </target>
+
+    <target name="environment-setup"
+            description="Setup the environment for the build.">
+        <composer composer="/usr/bin/composer" command="update"/>
+        <if>
+            <not>
+                <available file="${project.reports}" type="dir"/>
+            </not>
+            <then>
+                <mkdir dir="${project.reports}"/>
+            </then>
+        </if>
+    </target>
+
+    <target name="create-reports"
+            description="Create reports on the build."
+            depends="environment-setup,
+                     loc,
+				     code-sniffer,
+                     copy-paste-detector,
+				     depend,
+				     documentor,
+				     mess-detector,
+				     unit"/>
+
+    <!-- Sub Target definitions -->
+    <target name="code-sniffer"
+            description="Detect coding standard violations.  Output to the Command line.">
+        <phpcodesniffer standard="PSR2">
+            <formatter type="checkstyle" outfile="${project.reports}/code-sniffer-checkstyle.xml"/>
+            <fileset refid="src"/>
+        </phpcodesniffer>
+    </target>
+
+    <target name="copy-paste-detector">
+        <phpcpd>
+            <fileset refid="src"/>
+            <formatter type="pmd" outfile="${project.reports}/copy-paste-detector.xml"/>
+        </phpcpd>
+    </target>
+
+    <target name="depend"
+            depends="clean, unit"
+            description="Calculate software metrics using PHP_Depend">
+        <phpdepend>
+            <fileset refid="src"/>
+
+            <logger type="jdepend-chart"
+                    outfile="${project.reports}/depend-chart"/>
+            <logger type="jdepend-xml"
+                    outfile="${project.reports}/depend.xml"/>
+            <logger type="overview-pyramid"
+                    outfile="${project.reports}/depend-overview-pyramid"/>
+            <logger type="summary-xml"
+                    outfile="${project.reports}/depend-summary.xml"/>
+        </phpdepend>
+    </target>
+
+    <target name="documentor"
+            description="Generate or update API documentation using phpDocumentor">
+        <if>
+            <not>
+                <available file="${project.reports}/doc" type="dir"/>
+            </not>
+            <then>
+                <mkdir dir="${project.reports}/doc"/>
+            </then>
+        </if>
+        <phpdoc2
+                defaultPackageName="EWay"
+                destdir = "${project.reports}/doc"
+                title="Evoke-PHP/EWay">
+            <fileset refid = "src"/>
+        </phpdoc2>
+    </target>
+
+    <target name="lint-src"
+            description="Syntax check the php source files.">
+        <phplint deprecatedAsError="true">
+            <fileset refid="src"/>
+        </phplint>
+    </target>
+
+    <target name="lint-test"
+            description="Syntax check the php test files.">
+        <phplint deprecatedAsError="true">
+            <fileset refid="tst"/>
+        </phplint>
+    </target>
+
+    <target name="loc"
+            description="Measure project size using PHPLOC">
+        <phploc countTests="true"
+                reportDirectory="${project.reports}"
+                reportName="loc"
+                reportType="csv">
+            <fileset refid="src"/>
+            <fileset refid="tst"/>
+        </phploc>
+    </target>
+
+    <target name="mess-detector"
+            depends="clean"
+            description="Perform project mess detection using PHPMD and print human readable output. Intended for usage
+                         on the command line before committing.">
+
+        <phpmd rulesets="codesize,controversial,design,naming,unusedcode">
+            <fileset refid="src"/>
+            <formatter type="xml" outfile="${project.reports}/mess-detector.xml"/>
+        </phpmd>
+    </target>
+
+    <target name="unit"
+            depends="clean"
+            description="Run unit tests with PHPUnit">
+        <composer composer="/usr/bin/composer" command="update">
+                <arg value="-d ${project.test}"/>
+        </composer>
+        <exec executable="phpunit" passthru="true">
+            <arg value="-c"/>
+            <arg file="${project.config}/unit.xml"/>
+        </exec>
+    </target>
+
+    <target name="unit-quick"
+            depends=""
+            description="Run unit tests with PHPUnit without logging">
+        <exec executable="phpunit" passthru="true">
+            <arg value="-c"/>
+            <arg file="${project.config}/unit-quick.xml"/>
+        </exec>
+    </target>
+</project>
