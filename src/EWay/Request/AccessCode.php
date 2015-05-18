@@ -7,9 +7,9 @@
 
 namespace EWay\Request;
 
-use DomainException,
-    RuntimeException,
-    stdClass;
+use DomainException;
+use RuntimeException;
+use stdClass;
 
 /**
  * EWay Access Code Request
@@ -110,7 +110,7 @@ class AccessCode
         $decodedResponse = json_decode($response);
 
         if (!$decodedResponse instanceof stdClass) {
-            throw new RuntimeException('Unable to decode access code response.');
+            throw new RuntimeException('Unable to decode access code response');
         }
 
         return $decodedResponse;

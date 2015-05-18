@@ -8,6 +8,7 @@
 namespace EWay\Response;
 
 use stdClass;
+use RuntimeException;
 
 /**
  * AccessCode
@@ -275,19 +276,35 @@ class AccessCode
     /* Public Methods */
     /******************/
 
-    public function __construct($response)
+    /**
+     * Create the access code response.
+     *
+     * @param stdClass $response
+     */
+    public function __construct(stdClass $response)
     {
         $response->Errors = empty($response->Errors) ? [] : explode(',', $response->Errors);
         $this->response = $response;
     }
 
+    /**
+     * Get the access code from the response.
+     *
+     * @return string
+     * @throws RuntimeException
+     */
     public function getAccessCode()
     {
+        if (!isset($this->response->AccessCode)) {
+            throw new RuntimeException('Response does not have an access code');
+        }
+
         return $this->response->AccessCode;
     }
 
     /**
      * Get the errors from the response.
+     *
      * @return string[]
      */
     public function getErrors()
@@ -301,20 +318,31 @@ class AccessCode
         return $errors;
     }
 
+    /**
+     * Get the form action URL from the response.
+     *
+     * @return string
+     * @throws RuntimeException
+     */
     public function getFormActionURL()
     {
+        if (!isset($this->response->FormActionURL)) {
+            throw new RuntimeException('Response does not have a form action URL');
+        }
+
         return $this->response->FormActionURL;
     }
 
     /**
      * Whether the response has any errors.
+     *
      * @return bool
      */
     public function hasErrors()
     {
         $errorCodes = array_diff($this->response->Errors, $this->codesForSuccess);
 
-        return empty($errorCodes);
+        return !empty($errorCodes);
     }
 }
 // EOF
