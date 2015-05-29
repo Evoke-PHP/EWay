@@ -19,6 +19,7 @@ use stdClass;
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2015 Paul Young
  * @package   EWay_Test\Request
+ * @covers    EWay\Request\Request
  * @covers    EWay\Request\AccessCode
  * @requires  extension runkit
  */
@@ -102,7 +103,6 @@ class AccessCodeTest extends PHPUnit_Framework_TestCase
         }
 
         self::$fgcReturn = '{}';
-
     }
 
     /*********/
