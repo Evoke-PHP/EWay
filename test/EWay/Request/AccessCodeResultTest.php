@@ -112,11 +112,11 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
         self::$sccReturn = stream_context_create();
         $this->mockFGC();
         $this->mockSCC();
-        $accessCode = 'FPOI123hidfsoafpiij3i029';
-        $obj = new AccessCodeResult('apiKey', 'pass', $accessCode, false, 60);
+        $accessCode  = 'FPOI123hidfsoafpiij3i029';
+        $obj         = new AccessCodeResult('apiKey', 'pass', $accessCode, false, 60);
         $rawResponse = $obj->send();
 
-        $expectedBody = new stdClass;
+        $expectedBody             = new stdClass;
         $expectedBody->AccessCode = $accessCode;
 
         $expectedOptions =

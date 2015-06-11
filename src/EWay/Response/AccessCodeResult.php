@@ -12,12 +12,13 @@ namespace EWay\Response;
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2015 Paul Young
- * @package EWay\Response
+ * @package   EWay\Response
  */
 class AccessCodeResult extends Response
 {
     /**
      * Bank success codes (anything else is failure).
+     *
      * @var string[]
      */
     protected static $bankSuccessCodes = [
@@ -33,6 +34,7 @@ class AccessCodeResult extends Response
 
     /**
      * Return the bank authorisation code.
+     *
      * @return string
      */
     public function getBankAuthCode()
@@ -42,6 +44,7 @@ class AccessCodeResult extends Response
 
     /**
      * Return the two digit bank response code.
+     *
      * @return string
      */
     public function getBankResponseCode()
@@ -52,6 +55,7 @@ class AccessCodeResult extends Response
 
     /**
      * Get the bank response message as decoded by the error status codes.
+     *
      * @return string[]
      */
     public function getBankResponseMessage()
@@ -61,6 +65,7 @@ class AccessCodeResult extends Response
 
     /**
      * Get an echo of the merchant's invoice number (a 64 character string).
+     *
      * @return string
      */
     public function getInvoiceNumber()
@@ -70,6 +75,7 @@ class AccessCodeResult extends Response
 
     /**
      * Get an echo of the merchant's invoice reference (a 64 character string).
+     *
      * @return string
      */
     public function getInvoiceReference()
@@ -79,8 +85,9 @@ class AccessCodeResult extends Response
 
     /**
      * Get the amount that was authorised for this transaction in the lowest common denominator (cents).
+     *
      * @return int
-    */
+     */
     public function getTotalAmountAuth()
     {
         return $this->get('TotalAmount');
@@ -88,6 +95,7 @@ class AccessCodeResult extends Response
 
     /**
      * Get the unique identifier that represents the transaction in eWAY’s system.
+     *
      * @return int
      */
     public function getTransactionID()
@@ -97,6 +105,7 @@ class AccessCodeResult extends Response
 
     /**
      * Get whether the transaction was successful or not.
+     *
      * @return bool
      */
     public function getTransactionStatus()

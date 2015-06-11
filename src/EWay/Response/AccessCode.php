@@ -12,7 +12,7 @@ namespace EWay\Response;
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2015 Paul Young
- * @package EWay\Response
+ * @package   EWay\Response
  */
 class AccessCode extends Response
 {

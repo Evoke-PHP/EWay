@@ -7,15 +7,15 @@
 
 namespace EWay\Request;
 
-use stdClass;
 use RuntimeException;
+use stdClass;
 
 /**
  * AccessCodeResult
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2015 Paul Young
- * @package EWay\Request
+ * @package   EWay\Request
  */
 class AccessCodeResult extends Request
 {
@@ -47,7 +47,7 @@ class AccessCodeResult extends Request
      */
     public function send()
     {
-        $context  = stream_context_create(
+        $context = stream_context_create(
             [
                 'http' =>
                     [

@@ -21,14 +21,20 @@ class AccessCode extends Request
 {
     /**
      * Methods that can be used for payments.
+     *
      * @var array
      */
     public static $methods = [
-        'ProcessPayment', 'CreateTokenCustomer', 'UpdateTokenCustomer', 'TokenPayment', 'Authorise'
+        'ProcessPayment',
+        'CreateTokenCustomer',
+        'UpdateTokenCustomer',
+        'TokenPayment',
+        'Authorise'
     ];
 
     /**
      * Transaction types.
+     *
      * @var array
      */
     public static $transactionTypes = ['Purchase', 'MOTO', 'Recurring'];
@@ -45,7 +51,7 @@ class AccessCode extends Request
      */
     public function send()
     {
-        $context  = stream_context_create(
+        $context = stream_context_create(
             [
                 'http' =>
                     [
@@ -81,7 +87,7 @@ class AccessCode extends Request
      */
     public function setCustomer(Array $customer)
     {
-        $this->body->Customer = (object) $customer;
+        $this->body->Customer = (object)$customer;
     }
 
     /**
@@ -102,7 +108,7 @@ class AccessCode extends Request
     public function setCheckoutPayment($checkoutURL)
     {
         $this->body->CheckoutPayment = true;
-        $this->body->CheckoutUrl = $checkoutURL;
+        $this->body->CheckoutUrl     = $checkoutURL;
     }
 
     /**
@@ -136,7 +142,7 @@ class AccessCode extends Request
         $itemsObjects = [];
 
         foreach ($items as $item) {
-            $itemsObjects[] = (object) $item;
+            $itemsObjects[] = (object)$item;
         }
 
         $this->body->Items = $itemsObjects;
@@ -166,7 +172,7 @@ class AccessCode extends Request
         $optionsObjects = [];
 
         foreach ($options as $option) {
-            $optionsObjects[] = (object) $option;
+            $optionsObjects[] = (object)$option;
         }
 
         $this->body->Options = $optionsObjects;
@@ -186,21 +192,21 @@ class AccessCode extends Request
      * Set the payment information.
      *
      * @param mixed[] $paymentInformation
-     * Payment information of the form:
-     * <code>
-     * // 'TotalAmount' is the only required field.
-     * [
+     *     Payment information of the form:
+     *     <code>
+     *     // 'TotalAmount' is the only required field.
+     *     [
      *     'TotalAmount'        => 1234,       // integer for number of cents.
      *     'InvoiceNumber'      => 'I1234',    // string.
      *     'InvoiceDescription' => 'Inv Desc', // string
      *     'InvoiceReference'   => 'IR123',    // string
      *     'CurrencyCode'       => 'AUD'       // ISO 4217 3 char currency code.
-     * ]
-     * </code>
+     *     ]
+     *     </code>
      */
     public function setPayment(Array $paymentInformation)
     {
-        $this->body->Payment = (object) $paymentInformation;
+        $this->body->Payment = (object)$paymentInformation;
     }
 
     /**
@@ -220,7 +226,7 @@ class AccessCode extends Request
      */
     public function setShippingAddress(Array $shippingAddress)
     {
-        $this->body->ShippingAddress = (object) $shippingAddress;
+        $this->body->ShippingAddress = (object)$shippingAddress;
     }
 
     /**

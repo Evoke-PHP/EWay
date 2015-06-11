@@ -28,14 +28,14 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
     {
         return
             [
-                'Bank Authorisation Code' => ['BankAuthCode',     'AuthorisationCode'],
+                'Bank Authorisation Code' => ['BankAuthCode', 'AuthorisationCode'],
                 'Bank Response Code'      => ['BankResponseCode', 'ResponseCode'],
                 'Bank Response Message'   => ['BankResponseMessage', 'ResponseMessage'],
-                'Merchant Invoice Number' => ['InvoiceNumber',       'InvoiceNumber'],
-                'Merchant Invoice Ref'    => ['InvoiceReference',    'InvoiceReference'],
-                'Total Amount Authorised' => ['TotalAmountAuth',     'TotalAmount'],
-                'EWay Transaction ID'     => ['TransactionID',       'TransactionID'],
-                'Transaction Status'      => ['TransactionStatus',   'TransactionStatus']
+                'Merchant Invoice Number' => ['InvoiceNumber', 'InvoiceNumber'],
+                'Merchant Invoice Ref'    => ['InvoiceReference', 'InvoiceReference'],
+                'Total Amount Authorised' => ['TotalAmountAuth', 'TotalAmount'],
+                'EWay Transaction ID'     => ['TransactionID', 'TransactionID'],
+                'Transaction Status'      => ['TransactionStatus', 'TransactionStatus']
             ];
     }
 
@@ -45,49 +45,49 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
             [
                 'Bank Authorisation Code' =>
                     [
-                        'Response' => (object) ['AuthorisationCode' => '00'],
+                        'Response' => (object)['AuthorisationCode' => '00'],
                         'Method'   => 'BankAuthCode',
                         'Expected' => '00'
                     ],
-                'Bank Response Code' =>
+                'Bank Response Code'      =>
                     [
-                        'Response' => (object) ['ResponseCode' => '77'],
+                        'Response' => (object)['ResponseCode' => '77'],
                         'Method'   => 'BankResponseCode',
                         'Expected' => '77'
                     ],
-                'Bank Response Message' =>
+                'Bank Response Message'   =>
                     [
-                        'Response' => (object) ['ResponseMessage' => 'blah'],
+                        'Response' => (object)['ResponseMessage' => 'blah'],
                         'Method'   => 'BankResponseMessage',
                         'Expected' => 'blah'
                     ],
                 'Merchant Invoice Number' =>
                     [
-                        'Response' => (object) ['InvoiceNumber' => 'INV01234'],
+                        'Response' => (object)['InvoiceNumber' => 'INV01234'],
                         'Method'   => 'InvoiceNumber',
                         'Expected' => 'INV01234'
                     ],
-                'Merchant Invoice Ref' =>
+                'Merchant Invoice Ref'    =>
                     [
-                        'Response' => (object) ['InvoiceReference' => 'blah'],
+                        'Response' => (object)['InvoiceReference' => 'blah'],
                         'Method'   => 'InvoiceReference',
                         'Expected' => 'blah'
                     ],
                 'Total Amount Authorised' =>
                     [
-                        'Response' => (object) ['TotalAmount' => '3400'],
+                        'Response' => (object)['TotalAmount' => '3400'],
                         'Method'   => 'TotalAmountAuth',
                         'Expected' => '3400'
                     ],
-                'EWay Transaction ID' =>
+                'EWay Transaction ID'     =>
                     [
-                        'Response' => (object) ['TransactionID' => 'ID98765'],
+                        'Response' => (object)['TransactionID' => 'ID98765'],
                         'Method'   => 'TransactionID',
                         'Expected' => 'ID98765'
                     ],
-                'Transaction Status' =>
+                'Transaction Status'      =>
                     [
-                        'Response' => (object) ['TransactionStatus' => 'Status OK'],
+                        'Response' => (object)['TransactionStatus' => 'Status OK'],
                         'Method'   => 'TransactionStatus',
                         'Expected' => 'Status OK'
                     ]
@@ -98,26 +98,26 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
     {
         return
             [
-                'Approved_00' =>
+                'Approved_00'          =>
                     [
-                        'Response' => (object) ['ResponseCode' => '00'],
+                        'Response' => (object)['ResponseCode' => '00'],
                         'Expected' => true
                     ],
-                'Approved_08' =>
+                'Approved_08'          =>
                     [
-                        'Response' => (object) ['ResponseCode' => '08'],
+                        'Response' => (object)['ResponseCode' => '08'],
                         'Expected' => true
                     ],
-                'Failure_01' =>
-                [
-                    'Response' => (object) [ 'ResponseCode' => '01'],
-                    'Expected' => false
-                ],
+                'Failure_01'           =>
+                    [
+                        'Response' => (object)['ResponseCode' => '01'],
+                        'Expected' => false
+                    ],
                 'Failure_Non_Existent' =>
-                [
-                    'Response' => new stdClass,
-                    'Expected' => false
-                ]
+                    [
+                        'Response' => new stdClass,
+                        'Expected' => false
+                    ]
             ];
     }
 
@@ -131,7 +131,7 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
     public function testGetMethodDoesNotContainOnEmpty($method, $field)
     {
         try {
-            $obj = new AccessCodeResult(new stdClass);
+            $obj       = new AccessCodeResult(new stdClass);
             $getMethod = 'get' . $method;
             $obj->$getMethod();
 
@@ -139,7 +139,7 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
         } catch (PHPUnit_Framework_AssertionFailedError $e) {
             // Catch the fail and rethrow so that it is not caught as a RuntimeException below.
             throw $e;
-        }  catch (RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->assertSame('Response does not contain ' . $field, $e->getMessage());
         }
     }
@@ -149,7 +149,7 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
      */
     public function testGetMethodReturnsField(stdClass $response, $method, $expected)
     {
-        $obj = new AccessCodeResult($response);
+        $obj       = new AccessCodeResult($response);
         $getMethod = 'get' . $method;
         $this->assertSame($expected, $obj->$getMethod());
     }

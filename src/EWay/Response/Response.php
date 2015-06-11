@@ -15,21 +15,23 @@ use stdClass;
  *
  * @author    Paul Young <evoke@youngish.org>
  * @copyright Copyright (c) 2015 Paul Young
- * @package EWay\Response
+ * @package   EWay\Response
  */
 abstract class Response
 {
     /**
      * Response codes that indicate a successful response.
+     *
      * @var string[]
      */
     protected $codesForSuccess = ['A2000', 'A2008', 'A2010', 'A2011', 'A2016'];
 
     /**
      * Response Codes
+     *
      * @see https://eway.io/api-v3/#response-amp-error-codes
-     *     F7 codes supported in all Beagle Fraud Alerts except where otherwise indicated.
-     *     F9 codes supported in Beagle Fraud Alerts Enterprise only.
+     *      F7 codes supported in all Beagle Fraud Alerts except where otherwise indicated.
+     *      F9 codes supported in Beagle Fraud Alerts Enterprise only.
      * @var string[]
      */
     private static $codes = [
@@ -39,7 +41,6 @@ abstract class Response
         'A2010' => 'Approved For Partial Amount',
         'A2011' => 'Approved VIP',
         'A2016' => 'Approved Update Track 3',
-
         // Denials
         'D4401' => 'Refer to Issuer',
         'D4402' => 'Refer to Issuer, special',
@@ -101,7 +102,6 @@ abstract class Response
         'D4497' => 'MasterPass Error',
         'D4498' => 'PayPal Create Transaction Error',
         'D4499' => 'Invalid Transaction for Auth/Void',
-
         // Fraud
         'F7000' => 'Undefined Fraud Error',
         'F7001' => 'Challenged Fraud', // Enterprise Only.
@@ -142,7 +142,6 @@ abstract class Response
         'F9034' => 'Invalid Shipping Street',
         'F9037' => 'Suspicious Customer Email Address',
         'F9050' => 'High Risk Email Address and amount',
-
         // System
         'S5000' => 'System Error',
         'S5011' => 'PayPal Connection Error',
@@ -153,7 +152,6 @@ abstract class Response
         'S5088' => 'PayPal Transaction Created',
         'S5099' => 'Incomplete (Access Code in progress/incomplete)',
         'S5010' => 'Unknown error returned by gateway',
-
         // Validation
         'V6000' => 'Validation error',
         'V6001' => 'Invalid CustomerIP',
@@ -268,6 +266,7 @@ abstract class Response
 
     /**
      * The raw response object.
+     *
      * @var stdClass
      */
     protected $response;
@@ -280,7 +279,7 @@ abstract class Response
     public function __construct(stdClass $response)
     {
         $response->Errors = empty($response->Errors) ? [] : explode(',', $response->Errors);
-        $this->response = $response;
+        $this->response   = $response;
     }
 
     /******************/
