@@ -34,7 +34,7 @@ abstract class Response
      *      F9 codes supported in Beagle Fraud Alerts Enterprise only.
      * @var string[]
      */
-    private static $codes = [
+    protected static $codes = [
         // Approvals
         'A2000' => 'Transaction Approved', // except when challenged by Beagle.
         'A2008' => 'Honour With Identification',

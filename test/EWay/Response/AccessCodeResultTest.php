@@ -24,13 +24,42 @@ use stdClass;
  */
 class AccessCodeResultTest extends PHPUnit_Framework_TestCase
 {
+    public function providerGetBankResponseMessageIsDecoded()
+    {
+        return [
+            'Empty'    =>
+                [
+                    'Expected' => [],
+                    'Response' => (object)[]
+                ],
+                'Multiple' =>
+                [
+                    'Expected' => [
+                        'D4401' => 'Refer to Issuer',
+                        'D4402' => 'Refer to Issuer, special'
+                    ],
+                    'Response' => (object)['ResponseMessage' => 'D4401,D4402']
+                ],
+                'Single'   =>
+                [
+                    'Expected' => ['A2000' => 'Transaction Approved'],
+                    'Response' => (object)['ResponseMessage' => 'A2000']
+
+                ],
+                'Unknown'  =>
+                [
+                    'Expected' => ['blah' => 'Unknown Error'],
+                    'Response' => (object)['ResponseMessage' => 'blah'],
+                ]
+            ];
+    }
+
     public function providerGetMethodDoesNotContainOnEmpty()
     {
         return
             [
                 'Bank Authorisation Code' => ['BankAuthCode', 'AuthorisationCode'],
                 'Bank Response Code'      => ['BankResponseCode', 'ResponseCode'],
-                'Bank Response Message'   => ['BankResponseMessage', 'ResponseMessage'],
                 'Merchant Invoice Number' => ['InvoiceNumber', 'InvoiceNumber'],
                 'Merchant Invoice Ref'    => ['InvoiceReference', 'InvoiceReference'],
                 'Total Amount Authorised' => ['TotalAmountAuth', 'TotalAmount'],
@@ -54,12 +83,6 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
                         'Response' => (object)['ResponseCode' => '77'],
                         'Method'   => 'BankResponseCode',
                         'Expected' => '77'
-                    ],
-                'Bank Response Message'   =>
-                    [
-                        'Response' => (object)['ResponseMessage' => 'blah'],
-                        'Method'   => 'BankResponseMessage',
-                        'Expected' => 'blah'
                     ],
                 'Merchant Invoice Number' =>
                     [
@@ -124,6 +147,15 @@ class AccessCodeResultTest extends PHPUnit_Framework_TestCase
     /*********/
     /* Tests */
     /*********/
+
+    /**
+     * @dataProvider providerGetBankResponseMessageIsDecoded
+     */
+    public function testGetBankResponseMessageIsDecoded(Array $expected, stdClass $response)
+    {
+        $obj = new AccessCodeResult($response);
+        $this->assertSame($expected, $obj->getBankResponseMessage());
+    }
 
     /**
      * @dataProvider providerGetMethodDoesNotContainOnEmpty

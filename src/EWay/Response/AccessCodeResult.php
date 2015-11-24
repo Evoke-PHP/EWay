@@ -60,7 +60,18 @@ class AccessCodeResult extends Response
      */
     public function getBankResponseMessage()
     {
-        return $this->get('ResponseMessage');
+        if (!isset($this->response->ResponseMessage)) {
+            return [];
+        }
+
+        $responseCodes = explode(',', $this->response->ResponseMessage);
+        $responseMessages = [];
+
+        foreach ($responseCodes as $code) {
+            $responseMessages[$code] = isset(self::$codes[$code]) ? self::$codes[$code] : 'Unknown Error';
+        }
+
+        return $responseMessages;
     }
 
     /**
